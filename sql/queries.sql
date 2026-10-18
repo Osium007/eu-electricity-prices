@@ -114,13 +114,20 @@ ORDER BY avg_renewable_share_pct DESC;
 --    Median rather than mean, so one extreme country does not drag the line. Restricted
 --    to countries present across the whole window, so the line reflects price movement
 --    rather than changes in which countries are being averaged.
+--
+--    The current calendar month is excluded. Ember carries an average for the in-progress
+--    month built from however many days have settled so far, so that point is a partial
+--    month and would show as a provisional spike or dip next to the finished months.
 WITH full_coverage AS (
     SELECT iso3
     FROM prices
     WHERE date >= DATE '2019-01-01'
+      AND date < date_trunc('month', current_date)
     GROUP BY iso3
     HAVING COUNT(*) = (
-        SELECT COUNT(DISTINCT date) FROM prices WHERE date >= DATE '2019-01-01'
+        SELECT COUNT(DISTINCT date) FROM prices
+        WHERE date >= DATE '2019-01-01'
+          AND date < date_trunc('month', current_date)
     )
 )
 SELECT
@@ -132,5 +139,6 @@ SELECT
 FROM prices
 WHERE iso3 IN (SELECT iso3 FROM full_coverage)
   AND date >= DATE '2019-01-01'
+  AND date < date_trunc('month', current_date)
 GROUP BY date
 ORDER BY date;
