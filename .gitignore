@@ -1,7 +1,9 @@
 .venv/
 __pycache__/
 *.duckdb
-data/raw/
+data/raw/*
+!data/raw/.gitkeep
+sql.ipynb
 .ipynb_checkpoints/
 .DS_Store
 .claude/
