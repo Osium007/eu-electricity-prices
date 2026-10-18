@@ -6,7 +6,7 @@ This project takes EU day-ahead wholesale electricity prices since 2022 and chec
 against each country's renewable generation share. DuckDB and pandas for the pipeline,
 a Streamlit dashboard on top, and a short-term price forecast at the end.
 
-Work in progress. Dashboard and forecast still to come.
+The dashboard is built. A short-term price forecast is still to come.
 
 ## What the data says so far
 
@@ -23,6 +23,12 @@ also among the most volatile.
 
 So the answer is both, not either. Renewables look like they buy you a lower average price
 and pay for it in instability.
+
+**Prices have not come back down.** Across the countries with a full record since 2019, the
+median wholesale price averaged about 60 EUR/MWh before the crisis. It fell to roughly 20 in
+the 2020 demand collapse, then spiked to 459 in August 2022 after the gas supply shock, and
+the latest months are still near 150. The gap between countries widened sharply during the
+spike and has not fully closed, so the crisis both raised prices and pushed countries apart.
 
 ## Data
 
@@ -86,6 +92,26 @@ Then build the database:
 ```
 python src/load_duckdb.py
 ```
+
+And launch the dashboard:
+
+```
+streamlit run src/dashboard.py
+```
+
+## Dashboard
+
+`src/dashboard.py` is a Streamlit app with four views:
+
+- Headline numbers: the two correlations, the fit, and the price rise since 2019.
+- Renewable share against average price, one point per country, with a fitted line and
+  volatility shown as bubble size and colour.
+- The same country figures on a map of Europe, switchable between renewable share, price
+  and volatility.
+- The European median price since 2019 with a 25th to 75th percentile band and the main
+  events marked.
+
+It reads the DuckDB file directly, so run `src/load_duckdb.py` first.
 
 ## Stack
 
